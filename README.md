@@ -19,3 +19,7 @@
 
 - Here, we leverage NtCreateSection and NtMapViewSection to create memory sections and map our shellcode into it, avoids use of commmon APIS
   
+# References
+
+- https://maldevacademy.com/
+- https://www.crow.rip/
