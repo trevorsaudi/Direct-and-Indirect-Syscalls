@@ -11,9 +11,9 @@
 
 - Direct syscalls involve making system calls directly from user mode to kernel mode without using the standard Windows API functions.
 
-## [InDirectSyscalls](https://github.com/trevorsaudi/Direct-and-Indirect-Syscalls/tree/main/IndirectSyscalls)
+## [IndirectSyscalls](https://github.com/trevorsaudi/Direct-and-Indirect-Syscalls/tree/main/IndirectSyscalls)
 
-- Performing InDirect Syscalls by jumping to the address where the syscall is located in ntdll, instead of executing the syscall instruction ourselves
+- Performing Indirect Syscalls by jumping to the address where the syscall is located in ntdll, instead of executing the syscall instruction ourselves
 
 ## [Remote Mapping Injection - Indirect Syscalls](https://github.com/trevorsaudi/Direct-and-Indirect-Syscalls/tree/main/LocalMapping-Indirect)
 
