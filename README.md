@@ -16,7 +16,7 @@
 
 - The target process is `notepad.exe`, but this can be modified to any process that the user has permissions to manipulate.
 
-## [DirectSyscalls][(https://github.com/trevorsaudi/Process-Injection-cpp/tree/main/ClassicProcessInjection](https://github.com/trevorsaudi/Direct-and-Indirect-Syscalls/tree/main/DirectSyscalls)]
+## [DirectSyscalls][(https://github.com/trevorsaudi/Process-Injection-cpp/tree/main/ClassicProcessInjection](https://github.com/trevorsaudi/Direct-and-Indirect-Syscalls/tree/main/DirectSyscalls)
 
 - Standard classic process injection featuring common API calls like `VirtualAllocEx`, `WriteProcessMemory`, `CreateRemoteThread`.
 
