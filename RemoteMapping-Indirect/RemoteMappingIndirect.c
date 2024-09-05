@@ -125,14 +125,13 @@ BOOL RemoteMappingInjector( IN PBYTE pPayload, IN SIZE_T sPayloadSize) {
 
 
     BOOL bSTATE = TRUE;
-    DWORD PROCESS_ID;
-
-	HANDLE				hSection			= NULL;
-	PVOID				pLocalAddress		= NULL,
-					    pRemoteAddress		= NULL;
-	NTSTATUS			STATUS				= NULL;
-	SIZE_T				sViewSize			= NULL;
-	LARGE_INTEGER		MaximumSize 		= {
+    DWORD dwPID;
+    HANDLE   hSection = NULL;
+    PVOID    pLocalAddress  = NULL,
+	     pRemoteAddress = NULL;
+    NTSTATUS STATUS = NULL;
+    SIZE_T   sViewSize	= NULL;
+    LARGE_INTEGER MaximumSize 		= {
 			.HighPart = 0,
 			.LowPart = sPayloadSize
 	};
