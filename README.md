@@ -15,7 +15,7 @@
 
 - Performing Indirect Syscalls by jumping to the address where the syscall is located in ntdll, instead of executing the syscall instruction ourselves
 
-## [Remote Mapping Injection - Indirect Syscalls](https://github.com/trevorsaudi/Direct-and-Indirect-Syscalls/tree/main/LocalMapping-Indirect)
+## [Remote Mapping Injection - Indirect Syscalls](https://github.com/trevorsaudi/Direct-and-Indirect-Syscalls/tree/main/RemoteMapping-Indirect)
 
 - Here, we leverage NtCreateSection and NtMapViewSection to create memory sections and map our shellcode into it, avoids use of commmon APIS
 
