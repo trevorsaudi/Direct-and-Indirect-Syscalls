@@ -18,8 +18,15 @@
 ## [Remote Mapping Injection - Indirect Syscalls](https://github.com/trevorsaudi/Direct-and-Indirect-Syscalls/tree/main/LocalMapping-Indirect)
 
 - Here, we leverage NtCreateSection and NtMapViewSection to create memory sections and map our shellcode into it, avoids use of commmon APIS
+
+# Disclaimer
+
+- This repo contains content intended solely for educational and research purposes, and not to be used for malicious purposes or illegal activities.
+- The project is based on the incredible resources listed below:
   
 # References
 
 - https://maldevacademy.com/
 - https://www.crow.rip/
+- https://redops.at/en/blog/direct-syscalls-vs-indirect-syscalls
+- https://www.ired.team/offensive-security/code-injection-process-injection/ntcreatesection-+-ntmapviewofsection-code-injection
